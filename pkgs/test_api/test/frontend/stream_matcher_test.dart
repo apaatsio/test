@@ -36,13 +36,43 @@ void main() {
       expect(
           expectLater(stream, emits(2)),
           throwsTestFailure(allOf([
-            startsWith("Expected: should emit an event that <2>\n"),
+            startsWith("Expected: should emit <2>\n"),
             endsWith("   Which: emitted * 1\n"
                 "                  * 2\n"
                 "                  * 3\n"
                 "                  * 4\n"
                 "                  * 5\n"
                 "                  x Stream closed.\n")
+          ])));
+    });
+
+    test("rejects the first event of a Stream when using a normal matcher", () {
+      expect(
+          expectLater(stream, emits(greaterThan(1))),
+          throwsTestFailure(allOf([
+            startsWith("Expected: should emit a value greater than <1>\n"),
+            endsWith("   Which: emitted * 1\n"
+                "                  * 2\n"
+                "                  * 3\n"
+                "                  * 4\n"
+                "                  * 5\n"
+                "                  x Stream closed.\n"
+                "            which emitted an event that is not a value greater than <1>\n")
+          ])));
+    });
+
+    test("rejects the stream when using a StreamMatcher", () {
+      expect(
+          expectLater(stream, emits(emitsThrough(6))),
+          throwsTestFailure(allOf([
+            startsWith("Expected: should eventually emit <6>\n"),
+            endsWith("   Which: emitted * 1\n"
+                "                  * 2\n"
+                "                  * 3\n"
+                "                  * 4\n"
+                "                  * 5\n"
+                "                  x Stream closed.\n"
+                "            which never did emit <6>\n")
           ])));
     });
 
@@ -57,7 +87,7 @@ void main() {
       expect(
           expectLater(queue, emits(2)),
           throwsTestFailure(allOf([
-            startsWith("Expected: should emit an event that <2>\n"),
+            startsWith("Expected: should emit <2>\n"),
             endsWith("   Which: emitted * 1\n"
                 "                  * 2\n"
                 "                  * 3\n"
@@ -73,7 +103,7 @@ void main() {
       expect(
           expectLater(Stream.empty(), emits(1)),
           throwsTestFailure(allOf([
-            startsWith("Expected: should emit an event that <1>\n"),
+            startsWith("Expected: should emit <1>\n"),
             endsWith("   Which: emitted x Stream closed.\n")
           ])));
     });
@@ -187,9 +217,9 @@ void main() {
           expectLater(stream, emitsAnyOf([2, 3, 4])),
           throwsTestFailure(allOf([
             startsWith("Expected: should do one of the following:\n"
-                "          * emit an event that <2>\n"
-                "          * emit an event that <3>\n"
-                "          * emit an event that <4>\n"),
+                "          * emit <2>\n"
+                "          * emit <3>\n"
+                "          * emit <4>\n"),
             endsWith("   Which: emitted * 1\n"
                 "                  * 2\n"
                 "                  * 3\n"
@@ -197,9 +227,9 @@ void main() {
                 "                  * 5\n"
                 "                  x Stream closed.\n"
                 "            which failed all options:\n"
-                "                  * failed to emit an event that <2>\n"
-                "                  * failed to emit an event that <3>\n"
-                "                  * failed to emit an event that <4>\n")
+                "                  * failed to emit <2>\n"
+                "                  * failed to emit <3>\n"
+                "                  * failed to emit <4>\n")
           ])));
     });
 
@@ -224,16 +254,16 @@ void main() {
           expectLater(queue, emitsInOrder([1, 3, 2])),
           throwsTestFailure(allOf([
             startsWith("Expected: should do the following in order:\n"
-                "          * emit an event that <1>\n"
-                "          * emit an event that <3>\n"
-                "          * emit an event that <2>\n"),
+                "          * emit <1>\n"
+                "          * emit <3>\n"
+                "          * emit <2>\n"),
             endsWith("   Which: emitted * 1\n"
                 "                  * 2\n"
                 "                  * 3\n"
                 "                  * 4\n"
                 "                  * 5\n"
                 "                  x Stream closed.\n"
-                "            which didn't emit an event that <3>\n")
+                "            which didn't emit <3>\n")
           ])));
     });
   });
@@ -253,14 +283,14 @@ void main() {
       expect(
           expectLater(queue, emitsThrough(6)),
           throwsTestFailure(allOf([
-            startsWith("Expected: should eventually emit an event that <6>\n"),
+            startsWith("Expected: should eventually emit <6>\n"),
             endsWith("   Which: emitted * 1\n"
                 "                  * 2\n"
                 "                  * 3\n"
                 "                  * 4\n"
                 "                  * 5\n"
                 "                  x Stream closed.\n"
-                "            which never did emit an event that <6>\n")
+                "            which never did emit <6>\n")
           ])));
     });
   });
@@ -292,14 +322,14 @@ void main() {
       expect(
           expectLater(stream, neverEmits(4)),
           throwsTestFailure(allOf([
-            startsWith("Expected: should never emit an event that <4>\n"),
+            startsWith("Expected: should never emit <4>\n"),
             endsWith("   Which: emitted * 1\n"
                 "                  * 2\n"
                 "                  * 3\n"
                 "                  * 4\n"
                 "                  * 5\n"
                 "                  x Stream closed.\n"
-                "            which after 3 events did emit an event that <4>\n")
+                "            which after 3 events did emit <4>\n")
           ])));
     });
 
@@ -325,9 +355,9 @@ void main() {
           expectLater(stream, emitsInAnyOrder([4, 1, 2])),
           throwsTestFailure(allOf([
             startsWith("Expected: should do the following in any order:\n"
-                "          * emit an event that <4>\n"
-                "          * emit an event that <1>\n"
-                "          * emit an event that <2>\n"),
+                "          * emit <4>\n"
+                "          * emit <1>\n"
+                "          * emit <2>\n"),
             endsWith("   Which: emitted * 1\n"
                 "                  * 2\n"
                 "                  * 3\n"

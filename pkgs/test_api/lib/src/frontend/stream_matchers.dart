@@ -45,7 +45,7 @@ StreamMatcher emits(matcher) {
     return "emitted an event that $mismatchDescription";
   },
       // TODO(nweiz): add "should" once matcher#42 is fixed.
-      "emit an event that $matcherDescription");
+      "emit $matcherDescription");
 }
 
 /// Returns a [StreamMatcher] that matches a single error event that matches
